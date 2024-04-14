@@ -5,6 +5,8 @@ import numpy as np
 from classify import getlabel
 import pickle
 import random
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -32,19 +34,37 @@ def getData(user):
 
     return np.array(datasets)
 
-users = [user for user in os.listdir(PATH)]
-voices = []
+def preprocessing():
 
-for user in users:
-    voice = getData(user)
-    for i in voice:
-        voices.append(i)
+    users = [user for user in os.listdir(PATH)]
+    voices = []
 
-voices = np.array(voices)
-np.random.shuffle(voices)
-print(voices.shape)
+    for user in users:
+        voice = getData(user)
+        for i in voice:
+            voices.append(i)
 
-with open('res/voice.pickle', 'wb') as f:
-    pickle.dump(voices, f)
+    voices = np.array(voices)
+    np.random.shuffle(voices)
+    print(voices.shape)
 
+    with open('res/voice.pickle', 'wb') as f:
+        pickle.dump(voices, f)
 
+def train():
+    with open('res/voice.pickle', 'rb') as f:
+        voices = pickle.load(f)
+
+    X_train = voices[:, :-1]
+    y_train = voices[:, -1]
+    
+    X_train, x_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.1)
+
+    knn = KNeighborsClassifier(n_neighbors=3)
+    knn.fit(X_train, y_train)
+    pred = knn.predict(x_test)
+    print(pred)
+    # with open('res/knn.pickle', 'wb') as f:
+    #     pickle.dump(knn, f)
+
+train()
