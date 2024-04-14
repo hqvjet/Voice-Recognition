@@ -1,2 +1,4 @@
 venv
 johnenv
+__pycache__/
+KNN/__pycache__/
