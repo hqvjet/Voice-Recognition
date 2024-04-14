@@ -3,6 +3,7 @@ from KNN.constants import *
 import librosa
 import numpy as np
 from classify import getlabel
+import pickle
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -43,4 +44,9 @@ for user in users:
 
 voices = np.array(voices)
 labels = np.array(labels)
+
+with open(PATH + 'voice.pickle', 'wb') as f:
+    pickle.dump(voices, f)
+with open(PATH + 'label.pickle', 'wb') as f:
+    pickle.dump(labels, f)
 
