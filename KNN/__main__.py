@@ -45,8 +45,8 @@ for user in users:
 voices = np.array(voices)
 labels = np.array(labels)
 
-with open(PATH + 'voice.pickle', 'wb') as f:
+with open('res/voice.pickle', 'wb') as f:
     pickle.dump(voices, f)
-with open(PATH + 'label.pickle', 'wb') as f:
+with open('res/label.pickle', 'wb') as f:
     pickle.dump(labels, f)
 
