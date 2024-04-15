@@ -7,6 +7,7 @@ import pickle
 import random
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -58,13 +59,16 @@ def train():
     X_train = voices[:, :-1]
     y_train = voices[:, -1]
     
-    X_train, x_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.1)
+    X_train, x_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2)
 
     knn = KNeighborsClassifier(n_neighbors=3)
     knn.fit(X_train, y_train)
-    pred = knn.predict(x_test)
-    print(pred)
-    # with open('res/knn.pickle', 'wb') as f:
-    #     pickle.dump(knn, f)
+    y_pred = knn.predict(x_test)
+    print(y_pred)
+
+    with open('res/knn.pickle', 'wb') as f:
+        pickle.dump(knn, f)
+    print('Model saved')
+    print("Classification Report:\n", classification_report(y_test, y_pred))
 
 train()
