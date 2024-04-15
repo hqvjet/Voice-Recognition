@@ -21,7 +21,7 @@ def build_model():
     x_data = ds[:, :-1]
     y_data = ds[:, -1]
 
-    x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2)
     
     # Chuẩn hóa features
     scaler = StandardScaler()
