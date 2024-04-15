@@ -1,4 +1,6 @@
 import os
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import cross_val_score
 from KNN.constants import *
 import librosa
 import numpy as np
@@ -21,7 +23,7 @@ def getData(user):
         print('GETTING DATA FROM AUDIO FILE:', audio_file)
 
         # Load the audio file
-        audio, sr = librosa.load(PATH + user + '/' + audio_file, sr=8000, duration=3)
+        audio, sr = librosa.load(PATH + user + '/' + audio_file, sr=16000, duration=3)
         print(audio.shape)
 
         datasets.append(audio)
@@ -31,7 +33,7 @@ def getData(user):
         if datasets[i].shape[0] < MAX_LEN:
             datasets[i] = np.pad(datasets[i], (0, MAX_LEN - datasets[i].shape[0]), 'constant')
         datasets[i] = np.append(datasets[i], getlabel(user))
-        print(datasets[i].shape)
+    print(datasets[i].shape)
 
     return np.array(datasets)
 
@@ -60,15 +62,31 @@ def train():
     y_train = voices[:, -1]
     
     X_train, x_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2)
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    x_test = scaler.transform(x_test)
+    
+    k_values = range(1, 15)
+    opt_k = 1
+    max_acc = 0
 
-    knn = KNeighborsClassifier(n_neighbors=3)
-    knn.fit(X_train, y_train)
-    y_pred = knn.predict(x_test)
-    print(y_pred)
+    for k in k_values:
+        knn = KNeighborsClassifier(n_neighbors=k)
+        knn.fit(X_train, y_train)
+        acc = accuracy_score(y_test, knn.predict(x_test))
+        print(acc)
+        if acc > max_acc:
+            max_acc = acc
+            opt_k = k
+            with open('res/knn.pickle', 'wb') as f:
+                pickle.dump(knn, f)
 
-    with open('res/knn.pickle', 'wb') as f:
-        pickle.dump(knn, f)
     print('Model saved')
+
+    with open('res/knn.pickle', 'rb') as f:
+        knn = pickle.load(f)
+    y_pred = knn.predict(x_test)
     print("Classification Report:\n", classification_report(y_test, y_pred))
 
+preprocessing()
 train()

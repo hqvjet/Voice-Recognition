@@ -1,3 +1,3 @@
 PATH = 'dataset/'
-MAX_LEN = 24000
+MAX_LEN = 48000
 
