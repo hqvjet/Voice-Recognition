@@ -62,7 +62,7 @@ def train_model(train_loop):
     print(max)
          
 # TRAIN MODEL
-train_model(1000)
+train_model(200)
 
 # PREDICT
 # print(predict(x_test))
