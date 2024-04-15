@@ -6,11 +6,11 @@ from KNN.process import preprocessing
 
 app = FastAPI()
 
-with open('res/knn.pickle', 'rb') as f:
+with open('res/log_reg_model.pkl', 'rb') as f:
     knn = pickle.load(f)
 
 @app.post("/predict")
-def predict(file: UploadFile = File(...)):
+async def predict(file: UploadFile = File(...)):
     contents = await file.read()
 
     with open('res/' + file.filename, 'wb') as audio_file:
@@ -18,7 +18,7 @@ def predict(file: UploadFile = File(...)):
 
     x = preprocessing('res/' + file.filename)
 
-    y = knn.predict(x)
+    y = knn.predict(np.array([x]))
 
-    return {'prediction:': y}
+    return {'prediction:': y.tolist()}
 

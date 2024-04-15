@@ -61,7 +61,7 @@ def train():
     X_train = voices[:, :-1]
     y_train = voices[:, -1]
     
-    X_train, x_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2)
+    X_train, x_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.1)
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     x_test = scaler.transform(x_test)
@@ -73,7 +73,9 @@ def train():
     for k in k_values:
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(X_train, y_train)
-        acc = accuracy_score(y_test, knn.predict(x_test))
+        pred = knn.predict(x_test)
+        print(pred)
+        acc = accuracy_score(y_test, pred)
         print(acc)
         if acc > max_acc:
             max_acc = acc
